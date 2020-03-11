@@ -89,7 +89,7 @@ LOGDIR=/var/log/$PROJECT
 header  = sampleheader.txt
 footer  = samplefooter.txt
 subject = FOSSology scan complete
-client  = /usr/bin/{$MAIL_AGENT}
+client  = {$MAIL_AGENT}
 
 [EXT_AUTH]
 ; Use external Authentication
