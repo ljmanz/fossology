@@ -101,14 +101,32 @@ function reportError($error, $file=NULL)
 
 	$msg = $hdr . $error . "\n" . $longMsg . "\n";
 
-	// mailx will not take a string as the message body... save to a tmp
+	// heirloom-mailx / snail will not take a string as the message body... save to a tmp
 	// file and give it that.
 
 	$tmpFile = tempnam('.', 'testError');
 	$F = fopen($tmpFile, 'w') or die("Can not open tmp file $tmpFile\n");
 	fwrite($F, $msg);
 	fclose($F);
-	$last = exec("mailx -s 'test Setup Failed' $mailTo < $tmpFile ",$tossme, $rptGen);
+
+        // check if s-nail,heirloom-mailx or mailx is installed
+        $last = exec("which s-nail",$tossme, $rptGen);
+  
+        if($rptGen == 0) {
+          $last = exec("s-nail -s 'test Setup Failed' $mailTo < $tmpFile",$tossme, $rptGen);
+        } elseif($rptGen == 1) {    
+          $last = exec("which heirloom-mailx",$tossme, $rptGen);
+
+          if($rptGen == 0) {
+            $last = exec("heirloom-mailx -s 'test Setup Failed' $mailTo < $tmpFile",$tossme, $rptGen);
+          } elseif($rptGen == 1) {
+            $last = exec("mailx -s 'test Setup Failed' $mailTo < $tmpFile",$tossme, $rptGen);
+          } else {
+            echo $last; 
+          }
+        } else {
+          echo $last;
+        }
 }
 
 // Using the standard source path /home/fosstester/fossology
